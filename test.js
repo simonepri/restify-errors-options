@@ -6,7 +6,7 @@ test.serial('should add/delete custom options to/from body', t => {
   let err = new errors.InternalServerError();
   t.is(err.body.errno, undefined);
 
-  m.add('errno');
+  m.add('errno', '');
   err = new errors.InternalServerError();
   t.is(err.body.errno, '');
 
@@ -135,7 +135,7 @@ test.serial('should add/delete custom options to/from custom errors\' body', t =
   let err = new errors.ExecutionError();
   t.is(err.body.errno, undefined);
 
-  m.add('errno');
+  m.add('errno', '');
   err = new errors.ExecutionError();
   t.is(err.body.errno, '');
 
