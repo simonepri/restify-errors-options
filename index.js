@@ -126,7 +126,7 @@ function addOption(optName, optDefault) {
  * @param  {string} optName Name of the option key to remove.
  */
 function delOption(optName) {
-  if (!customOptions[optName]) {
+  if (typeof customOptions[optName] === 'undefined') {
     return;
   }
   delete customOptions[optName];
