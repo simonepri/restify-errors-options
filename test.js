@@ -160,3 +160,16 @@ test.serial('should add/delete custom options to/from http errors\' body', t => 
   err = errors.makeErrFromCode(406);
   t.is(err.body.errno, undefined);
 });
+
+test.serial('should remain unalterated without a default value', t => {
+  let err = new errors.InternalServerError();
+  t.is(err.body.errno, undefined);
+
+  m.add('errno');
+  err = new errors.InternalServerError();
+  t.is(Object.prototype.hasOwnProperty.call(err.body, 'errno'), false);
+
+  m.delete('errno');
+  err = new errors.InternalServerError();
+  t.is(err.body.errno, undefined);
+});
