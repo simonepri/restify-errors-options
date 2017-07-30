@@ -77,10 +77,12 @@ function patchErrorBody(err, options) {
         value = customOptions[optName](err.body.code, err.statusCode, err.body.message);
       }
     }
-    // Adds the option to the body of the error.
-    err.body[optName] = value;
-    // Adds the option to the json representation of the error.
-    json[optName] = value;
+    if (value !== undefined) {
+      // Adds the option to the body of the error.
+      err.body[optName] = value;
+      // Adds the option to the json representation of the error.
+      json[optName] = value;
+    }
   });
 
   // Patchs the toJSON method.
