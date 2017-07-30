@@ -16,20 +16,26 @@ const errorsOptions = require('restify-errors-options');
 const restify = require('restify');
 
 // Default behaviour
-const err2 = new restify.errors.NotFoundError({errno: 'NFE'});
-console.log(err2.toJSON());
+const err1 = new restify.errors.NotFoundError({errno: 'NFE'});
+console.log(err1.toJSON());
 //=> {code: 'NotFound', message: ''}
 
 // Add errno as option to add to the body
 errorsOptions.add('errno');
-const err1 = new restify.errors.NotFoundError({errno: 'NFE'});
-console.log(err1.toJSON());
+const err2 = new restify.errors.NotFoundError({errno: 'NFE'});
+console.log(err2.toJSON());
 //=> {code: 'NotFound', message: '', errno: 'NFE'}
+console.log(err1.toJSON());
+//=> {code: 'NotFound', message: ''}
 
 // Restore the default behaviour
 errorsOptions.delete('errno');
-const err2 = new restify.errors.NotFoundError({errno: 'NFE'});
+const err3 = new restify.errors.NotFoundError({errno: 'NFE'});
+console.log(err3.toJSON());
+//=> {code: 'NotFound', message: ''}
 console.log(err2.toJSON());
+//=> {code: 'NotFound', message: '', errno: 'NFE'}
+console.log(err1.toJSON());
 //=> {code: 'NotFound', message: ''}
 ```
 
