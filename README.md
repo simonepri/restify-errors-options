@@ -9,6 +9,29 @@
 $ npm install --save restify-errors-options
 ```
 
+## Usage
+
+```js
+const errors = require('restify-errors');
+const errorsOptions = require('restify-errors-options');
+
+// Default behaviour
+const err2 = errors.NotFoundError({errno: 'NFE'});
+console.log(err2.toJSON());
+//=> {code: 'NotFound', message: ''}
+
+// Add errno as option to add to the body
+errorsOptions.add('errno');
+const err1 = errors.NotFoundError({errno: 'NFE'});
+console.log(err1.toJSON());
+//=> {code: 'NotFound', message: '', errno: 'NFE'}
+
+// Restore the default behaviour
+errorsOptions.delete('errno');
+const err2 = errors.NotFoundError({errno: 'NFE'});
+console.log(err2.toJSON());
+//=> {code: 'NotFound', message: ''}
+```
 ## Authors
 * **Simone Primarosa** - [simonepri](https://github.com/simonepri)
 
