@@ -147,3 +147,16 @@ test.serial('should add/delete custom options to/from custom errors\' body', t =
   err = new errors.ExecutionError();
   t.is(err.body.errno, undefined);
 });
+
+test.serial('should add/delete custom options to/from http errors\' body', t => {
+  let err = errors.makeErrFromCode(406);
+  t.is(err.body.errno, undefined);
+
+  m.add('errno', '');
+  err = errors.makeErrFromCode(406);
+  t.is(err.body.errno, '');
+
+  m.delete('errno');
+  err = errors.makeErrFromCode(406);
+  t.is(err.body.errno, undefined);
+});
