@@ -129,3 +129,21 @@ test.serial('should allow to use different default for each error code', t => {
   err = new errors.NotImplementedError({message: 'Hello World'});
   t.is(err.body.errno, undefined);
 });
+
+test.serial('should add/delete custom options to/from custom errors\' body', t => {
+  errors.makeConstructor('ExecutionError', {statusCode: 406});
+  let err = new errors.ExecutionError();
+  t.is(err.body.errno, undefined);
+
+  m.add('errno');
+  err = new errors.ExecutionError();
+  t.is(err.body.errno, '');
+
+  errors.makeConstructor('UnicornError', {statusCode: 404});
+  err = new errors.UnicornError();
+  t.is(err.body.errno, '');
+
+  m.delete('errno');
+  err = new errors.ExecutionError();
+  t.is(err.body.errno, undefined);
+});
