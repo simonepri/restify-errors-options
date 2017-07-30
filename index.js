@@ -8,7 +8,7 @@ const customOptions = {};
 const exclude = ['makeConstructor', 'makeErrFromCode', 'bunyanSerializer', 'codeToHttpError'];
 
 Object.keys(errors)
-  .filter(key => !exclude.includes(key))
+  .filter(key => !Array.prototype.includes.call(exclude, key))
   .forEach(errName => patchError(errName));
 patchMakeConstructor();
 patchMakeErrFromCode();
