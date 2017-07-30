@@ -110,9 +110,10 @@ function patchError(errName) {
  */
 function patchUtil(funcName) {
   const func = errors[funcName];
-  errors[funcName] = () => {
+  errors[funcName] = function () {
     func.apply(null, arguments);
     errMethods[arguments[0]] = true;
+    patchError(arguments[0]);
   };
 }
 
