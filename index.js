@@ -17,6 +17,8 @@ Object.keys(errors)
   });
 Object.keys(utilsMethods)
   .forEach(funcName => patchUtil(funcName));
+Object.keys(errMethods)
+  .forEach(errName => patchError(errName));
 
 /**
  * Adds cuostom options to the error body.
@@ -102,18 +104,6 @@ function patchError(errName) {
 }
 
 /**
- * Removes a previously added hook to a restify error.
- * @param  {string} errName  Name of the method of 'errors' to unpatch.
- */
-function unpatchError(errName) {
-  if (!origErrors[errName]) {
-    return;
-  }
-  errors[errName] = origErrors[errName];
-  delete origErrors[errName];
-}
-
-/**
  * Adds an hook to a restify errors util function in order to be able to patch
  * user created errors.
  * @param  {string} funcName Name of the method of 'errors' to patch
@@ -135,9 +125,6 @@ function patchUtil(funcName) {
  *   You can use this behaviour to provide different default for each error.
  */
 function addOption(optName, optDefault) {
-  if (_.isEmpty(customOptions)) {
-    Object.keys(errMethods).forEach(errName => patchError(errName));
-  }
   if (typeof optDefault !== 'function') {
     const val = optDefault;
     optDefault = () => val;
@@ -154,10 +141,6 @@ function delOption(optName) {
     return;
   }
   delete customOptions[optName];
-
-  if (_.isEmpty(customOptions)) {
-    Object.keys(errMethods).forEach(errName => unpatchError(errName));
-  }
 }
 
 module.exports = {
