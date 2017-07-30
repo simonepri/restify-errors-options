@@ -3,15 +3,15 @@
 const errors = require('restify-errors');
 const _ = require('lodash');
 
-const utilsMethods = {makeConstructor: true, makeErrFromCode: true};
-
 const customOptions = {};
 
+const exclude = ['makeConstructor', 'makeErrFromCode', 'bunyanSerializer', 'codeToHttpError'];
+
 Object.keys(errors)
-  .filter(key => !utilsMethods[key])
+  .filter(key => !exclude.includes(key))
   .forEach(errName => patchError(errName));
-Object.keys(utilsMethods)
-  .forEach(funcName => patchUtil(funcName));
+patchMakeConstructor();
+patchMakeErrFromCode();
 
 /**
  * Adds cuostom options to the error body.
@@ -50,37 +50,64 @@ function extendErrorBody(ctor) {
     const options = parseOptions(arguments) || {};
     // Calls the parent constructor with itself as scope.
     ctor.apply(this, arguments);
-
-    // Gets the current toJSON to be extended.
-    const json = this.toJSON();
-
-    Object.keys(customOptions).forEach(optName => {
-      let value = options[optName];
-      if (value === undefined) {
-        value = this.body[optName];
-        if (value === '' || value === undefined) {
-          value = customOptions[optName](this.body.code, this.statusCode, this.body.message);
-          if (value === undefined) {
-            value = '';
-          }
-        }
-      }
-      // Adds the option to the body of the error.
-      this.body[optName] = value;
-      // Adds the option to the json representation of the error.
-      json[optName] = value;
-    });
-
-    // Patchs the toJSON method.
-    this.toJSON = () => json;
+    // Adds custom options to itself
+    patchErrorBody(this, options);
   }
-  // Rename the function.
-  Object.defineProperty(RestifyError, 'name', {value: ctor.name});
 
   // Make the prototype an instance of the old class.
   RestifyError.prototype = Object.create(ctor.prototype);
 
   return RestifyError;
+}
+
+/**
+ * Monkey patch the error object after his creation.
+ * @param  {object} err Error to patch.
+ * @param {object} options Options given by the user.
+ */
+function patchErrorBody(err, options) {
+  // Gets the current toJSON to be extended.
+  const json = err.toJSON();
+
+  Object.keys(customOptions).forEach(optName => {
+    let value = options[optName];
+    if (value === undefined) {
+      value = err.body[optName];
+      if (value === '' || value === undefined) {
+        value = customOptions[optName](err.body.code, err.statusCode, err.body.message);
+      }
+    }
+    // Adds the option to the body of the error.
+    err.body[optName] = value;
+    // Adds the option to the json representation of the error.
+    json[optName] = value;
+  });
+
+  // Patchs the toJSON method.
+  err.toJSON = () => json;
+}
+
+/**
+ * Adds an hook to the makeConstructor method,
+ */
+function patchMakeConstructor() {
+  const func = errors.makeConstructor;
+  errors.makeConstructor = function () {
+    func.apply(null, arguments);
+    patchError(arguments[0]);
+  };
+}
+
+/**
+ * Adds an hook to the makeErrFromCode method.
+ */
+function patchMakeErrFromCode() {
+  const func = errors.makeErrFromCode;
+  errors.makeErrFromCode = function () {
+    const err = func.apply(null, arguments);
+    patchErrorBody(err, {});
+    return err;
+  };
 }
 
 /**
@@ -90,19 +117,6 @@ function extendErrorBody(ctor) {
  */
 function patchError(errName) {
   errors[errName] = extendErrorBody(errors[errName]);
-}
-
-/**
- * Adds an hook to a restify errors util function in order to be able to patch
- * user created errors.
- * @param  {string} funcName Name of the method of 'errors' to patch
- */
-function patchUtil(funcName) {
-  const func = errors[funcName];
-  errors[funcName] = function () {
-    func.apply(null, arguments);
-    patchError(arguments[0]);
-  };
 }
 
 /**
