@@ -10,25 +10,25 @@ $ npm install --save restify-errors-options
 ```
 
 ## Usage
-
 ```js
-const errors = require('restify-errors');
 const errorsOptions = require('restify-errors-options');
+// Is extremely important to require restify-errors-options before restify.
+const restify = require('restify');
 
 // Default behaviour
-const err2 = errors.NotFoundError({errno: 'NFE'});
+const err2 = new restify.errors.NotFoundError({errno: 'NFE'});
 console.log(err2.toJSON());
 //=> {code: 'NotFound', message: ''}
 
 // Add errno as option to add to the body
 errorsOptions.add('errno');
-const err1 = errors.NotFoundError({errno: 'NFE'});
+const err1 = new restify.errors.NotFoundError({errno: 'NFE'});
 console.log(err1.toJSON());
 //=> {code: 'NotFound', message: '', errno: 'NFE'}
 
 // Restore the default behaviour
 errorsOptions.delete('errno');
-const err2 = errors.NotFoundError({errno: 'NFE'});
+const err2 = new restify.errors.NotFoundError({errno: 'NFE'});
 console.log(err2.toJSON());
 //=> {code: 'NotFound', message: ''}
 ```
