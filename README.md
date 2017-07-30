@@ -32,6 +32,42 @@ const err2 = errors.NotFoundError({errno: 'NFE'});
 console.log(err2.toJSON());
 //=> {code: 'NotFound', message: ''}
 ```
+
+## API
+
+### add(optName, [optDefault])
+
+Adds custom options to errors' body.
+
+#### optName
+
+Type: `string`
+
+Name of the option key to add.
+
+#### optDefault
+
+Type: `(number|boolean|string|object)`
+
+Default value for the option.
+You can also provide a function, see the next section.
+
+#### optDefault(errorCode, errorHttpCode, errorMessage)
+
+Type: `function`
+
+Returns the default value for the option using parameters of the error.
+
+### delete(optName)
+
+Removes previously added custom options..
+
+#### optName
+
+Type: `string`
+
+Name of the option key to remove.
+
 ## Authors
 * **Simone Primarosa** - [simonepri](https://github.com/simonepri)
 
