@@ -19,15 +19,15 @@ Object.keys(utilsMethods)
   .forEach(funcName => patchUtil(funcName));
 
 /**
- * [extendErrorBody description]
- * @param  {[type]} ctor [description]
- * @return {[type]}      [description]
+ * Adds cuostom options to the error body.
+ * @param  {function} ctor Original Cnstructor of the error.
+ * @return {function} Hooked constructor of the error.
  */
 function extendErrorBody(ctor) {
   /**
    * Parse errror's arguments to extract the 'options' object.
    * Extracted from https://github.com/restify/errors/blob/master/lib/helpers.js#L30
-   * @param  {} ctorArgs Arguments of the error
+   * @param  {} ctorArgs Arguments of the error.
    */
   function parseOptions(ctorArgs) {
     function parse() {
@@ -53,7 +53,7 @@ function extendErrorBody(ctor) {
    */
   function RestifyError() {
     const options = parseOptions(arguments) || {};
-    // Calls the parent constructor with itself as scope
+    // Calls the parent constructor with itself as scope.
     ctor.apply(this, arguments);
 
     // Gets the current toJSON to be extended.
@@ -70,19 +70,19 @@ function extendErrorBody(ctor) {
           }
         }
       }
-      // Adds the option to the body of the error
+      // Adds the option to the body of the error.
       this.body[optName] = value;
-      // Adds the option to the json representation of the error
+      // Adds the option to the json representation of the error.
       json[optName] = value;
     });
 
     // Patchs the toJSON method.
     this.toJSON = () => json;
   }
-  // Rename the function
+  // Rename the function.
   Object.defineProperty(RestifyError, 'name', {value: ctor.name});
 
-  // Make the prototype an instance of the old class
+  // Make the prototype an instance of the old class.
   RestifyError.prototype = Object.create(ctor.prototype);
 
   return RestifyError;
@@ -91,7 +91,7 @@ function extendErrorBody(ctor) {
 /**
  * Add an hook to a restify error in order to be able to add custom options to
  * his body.
- * @param  {string} errName Name of the method of 'errors' to unpatch
+ * @param  {string} errName Name of the method of 'errors' to unpatch.
  */
 function patchError(errName) {
   if (origErrors[errName]) {
@@ -103,7 +103,7 @@ function patchError(errName) {
 
 /**
  * Removes a previously added hook to a restify error.
- * @param  {string} errName  Name of the method of 'errors' to unpatch
+ * @param  {string} errName  Name of the method of 'errors' to unpatch.
  */
 function unpatchError(errName) {
   if (!origErrors[errName]) {
@@ -128,7 +128,7 @@ function patchUtil(funcName) {
 
 /**
  * Adds custom options to errors' body.
- * @param  {string} optName Name of the option key
+ * @param  {string} optName Name of the option key to add.
  * @param  {}       [optDefault] Default value for the option.
  *   If a function is provided it will be called with
  *   (errorCode, errorHttpCode, errorMessage) as parameters.
@@ -147,7 +147,7 @@ function addOption(optName, optDefault) {
 
 /**
  * Removes previously added custom options.
- * @param  {string} optName Name of the option key
+ * @param  {string} optName Name of the option key to remove.
  */
 function delOption(optName) {
   if (!customOptions[optName]) {
