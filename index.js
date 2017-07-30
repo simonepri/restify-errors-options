@@ -4,21 +4,14 @@ const errors = require('restify-errors');
 const _ = require('lodash');
 
 const utilsMethods = {makeConstructor: true, makeErrFromCode: true};
-const errMethods = {};
-
-const origErrors = {};
 
 const customOptions = {};
 
 Object.keys(errors)
   .filter(key => !utilsMethods[key])
-  .forEach(errName => {
-    errMethods[errName] = true;
-  });
+  .forEach(errName => patchError(errName));
 Object.keys(utilsMethods)
   .forEach(funcName => patchUtil(funcName));
-Object.keys(errMethods)
-  .forEach(errName => patchError(errName));
 
 /**
  * Adds cuostom options to the error body.
@@ -96,10 +89,6 @@ function extendErrorBody(ctor) {
  * @param  {string} errName Name of the method of 'errors' to unpatch.
  */
 function patchError(errName) {
-  if (origErrors[errName]) {
-    return;
-  }
-  origErrors[errName] = errors[errName];
   errors[errName] = extendErrorBody(errors[errName]);
 }
 
@@ -112,7 +101,6 @@ function patchUtil(funcName) {
   const func = errors[funcName];
   errors[funcName] = function () {
     func.apply(null, arguments);
-    errMethods[arguments[0]] = true;
     patchError(arguments[0]);
   };
 }
