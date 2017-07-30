@@ -1,0 +1,45 @@
+{
+  "name": "restify-errors-options",
+  "version": "0.0.0",
+  "description": "Add custom options to Restify's errors",
+  "main": "index.js",
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "restify-errors": "^4.3.0"
+  },
+  "devDependencies": {
+    "ava": "*",
+    "codecov": "^2.2.0",
+    "nyc": "^11.0.3",
+    "xo": "*"
+  },
+  "engines": {
+    "node": ">=4"
+  },
+  "scripts": {
+    "test": "xo && ava",
+    "coverage": "nyc npm test && nyc report --reporter=text-lcov > coverage/coverage.lcov && codecov"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/simonepri/restify-errors-options.git"
+  },
+  "author": {
+    "name": "Simone Primarosa",
+    "email": "simone.pri@hotmail.it"
+  },
+  "keywords": [
+    "restify-errors-options",
+    "restify errors options",
+    "restify-errors",
+    "restify errors"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/simonepri/restify-errors-options/issues"
+  },
+  "homepage": "https://github.com/simonepri/restify-errors-options#readme",
+  "xo": {
+    "space": true
+  }
+}
