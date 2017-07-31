@@ -180,10 +180,12 @@ test.serial('should mantain the error inheritance inalterated', t => {
   t.false(err instanceof errors.RestError);
   t.true(err instanceof errors.HttpError);
   t.true(err instanceof Error);
+  t.is(err.name, 'InternalServerError');
 
   err = new errors.BadMethodError();
   t.true(err instanceof errors.BadMethodError);
   t.true(err instanceof errors.RestError);
   t.true(err instanceof errors.HttpError);
   t.true(err instanceof Error);
+  t.is(err.name, 'BadMethodError');
 });
