@@ -173,3 +173,17 @@ test.serial('should remain unalterated without a default value', t => {
   err = new errors.InternalServerError();
   t.is(err.body.errno, undefined);
 });
+
+test.serial('should mantain the error inheritance inalterated', t => {
+  let err = new errors.InternalServerError();
+  t.true(err instanceof errors.InternalServerError);
+  t.false(err instanceof errors.RestError);
+  t.true(err instanceof errors.HttpError);
+  t.true(err instanceof Error);
+
+  err = new errors.BadMethodError();
+  t.true(err instanceof errors.BadMethodError);
+  t.true(err instanceof errors.RestError);
+  t.true(err instanceof errors.HttpError);
+  t.true(err instanceof Error);
+});
