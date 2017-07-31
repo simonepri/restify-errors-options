@@ -94,10 +94,11 @@ function patchErrorBody(err, options) {
  */
 function patchMakeConstructor() {
   const func = errors.makeConstructor;
-  errors.makeConstructor = function () {
+  function makeConstructorHook() {
     func.apply(null, arguments);
     patchError(arguments[0]);
-  };
+  }
+  errors.makeConstructor = makeConstructorHook;
 }
 
 /**
