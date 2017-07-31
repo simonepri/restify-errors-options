@@ -1,5 +1,7 @@
 'use strict';
 
+const util = require('util');
+
 const errors = require('restify-errors');
 const _ = require('lodash');
 
@@ -43,21 +45,30 @@ function extendErrorBody(ctor) {
   }
 
   /**
-   * Hook constructor.
+   * Dynamically create a constructor.
+   * Must be anonymous fn.
    * @constructor
    */
-  function RestifyError() {
+  // Use an object because otherwise the variable name is shown as function name.
+  const anonymous = {};
+  anonymous.hook = function () {
     const options = parseOptions(arguments) || {};
     // Calls the parent constructor with itself as scope.
     ctor.apply(this, arguments);
     // Adds custom options to itself
     patchErrorBody(this, options);
-  }
+  };
+  // Inherits from the original error.
+  // Is that necessary??
+  util.inherits(anonymous.hook, ctor);
 
   // Make the prototype an instance of the old class.
-  RestifyError.prototype = Object.create(ctor.prototype);
+  anonymous.hook.prototype = ctor.prototype;
 
-  return RestifyError;
+  // Assign display name
+  anonymous.hook.displayName = ctor.displayName + 'Hook';
+
+  return anonymous.hook;
 }
 
 /**
@@ -112,6 +123,10 @@ function patchMakeErrFromCode() {
     return err;
   }
   errors.makeErrFromCode = makeErrFromCodeHook;
+
+  // Deprecated.
+  // See https://github.com/restify/errors/blob/master/lib/index.js#L126
+  errors.codeToHttpError = makeErrFromCodeHook;
 }
 
 /**
