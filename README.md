@@ -39,6 +39,12 @@ console.log(err1.toJSON());
 //=> {code: 'NotFound', message: ''}
 ```
 
+## Plugins
+Community packages that implement adds options through this package.
+If you want yours listed here open a PR.
+
+* [restify-errors-options-errno](https://github.com/simonepri/restify-errors-options-errno): *Add errno to Restify's errors*
+
 ## API
 
 ### add(optName, [optDefault])
