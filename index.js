@@ -105,11 +105,12 @@ function patchMakeConstructor() {
  */
 function patchMakeErrFromCode() {
   const func = errors.makeErrFromCode;
-  errors.makeErrFromCode = function () {
+  function makeErrFromCodeHook() {
     const err = func.apply(null, arguments);
     patchErrorBody(err, {});
     return err;
-  };
+  }
+  errors.makeErrFromCode = makeErrFromCodeHook;
 }
 
 /**
