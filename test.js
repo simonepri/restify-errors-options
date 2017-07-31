@@ -189,3 +189,21 @@ test.serial('should mantain the error inheritance inalterated', t => {
   t.true(err instanceof Error);
   t.is(err.name, 'BadMethodError');
 });
+
+test.serial('should create HttpError, and retain a prior cause', t => {
+  const priorErr = new Error('foobar');
+
+  let err = new errors.HttpError(priorErr, 'new message');
+  t.is(err.cause(), priorErr);
+  t.is(err.name, 'HttpError');
+  t.is(err.message, 'new message');
+  t.is(err.body.message, 'new message');
+  t.is(err.body.code, 'Error');
+
+  err = new errors.HttpError(priorErr, {message: 'bazinga!'});
+  t.is(err.cause(), priorErr);
+  t.is(err.name, 'HttpError');
+  t.is(err.message, 'bazinga!');
+  t.is(err.body.message, 'bazinga!');
+  t.is(err.body.code, 'Error');
+});
