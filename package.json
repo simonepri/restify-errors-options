@@ -2,44 +2,60 @@
   "name": "restify-errors-options",
   "version": "0.3.0",
   "description": "Add custom options to Restify's errors",
-  "main": "index.js",
-  "dependencies": {
-    "lodash": "^4.17.4",
-    "restify-errors": "^4.3.0"
+  "license": "MIT",
+  "homepage": "https://github.com/simonepri/restify-errors-options#readme",
+  "repository": "github:simonepri/restify-errors-options",
+  "bugs": {
+    "url": "https://github.com/simonepri/restify-errors-options/issues",
+    "email": "simonepri@outlook.com"
   },
-  "devDependencies": {
-    "ava": "*",
-    "codecov": "^2.2.0",
-    "nyc": "^11.0.3",
-    "xo": "*"
-  },
-  "engines": {
-    "node": ">=4"
-  },
-  "scripts": {
-    "test": "xo && ava",
-    "coverage": "nyc npm test && nyc report --reporter=text-lcov > coverage/coverage.lcov && codecov"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/simonepri/restify-errors-options.git"
-  },
-  "author": {
-    "name": "Simone Primarosa",
-    "email": "simone.pri@hotmail.it"
-  },
+  "author": "Simone Primarosa <simonepri@outlook.com> (https://simoneprimarosa.com)",
+  "contributors": [
+    "Simone Primarosa <simonepri@outlook.com> (https://simoneprimarosa.com)"
+  ],
   "keywords": [
     "restify-errors-options",
     "restify errors options",
     "restify-errors",
     "restify errors"
   ],
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/simonepri/restify-errors-options/issues"
+  "main": "index.js",
+  "files": [
+    "LICENSE",
+    "README.md",
+    "package.json",
+    "index.js"
+  ],
+  "engines": {
+    "node": ">=4"
   },
-  "homepage": "https://github.com/simonepri/restify-errors-options#readme",
+  "scripts": {
+    "test": "xo&& nyc ava",
+    "release": "np",
+    "update": "npm-check -u"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "restify-errors": "^4.3.0"
+  },
+  "devDependencies": {
+    "ava": "*",
+    "np": "*",
+    "npm-check": "*",
+    "nyc": "*",
+    "xo": "*"
+  },
+  "ava": {
+    "verbose": true
+  },
+  "nyc": {
+    "reporter": [
+      "lcovonly",
+      "text"
+    ]
+  },
   "xo": {
+    "prettier": true,
     "space": true
   }
 }
