@@ -10,7 +10,7 @@ const customOptions = {};
 const exclude = ['codeToHttpError'];
 
 Object.keys(errors)
-  .filter(key => !key.endsWith('Error'))
+  .filter(key => key.endsWith('Error'))
   .filter(key => !exclude.some(method => key === method))
   .forEach(errName => patchError(errName));
 
