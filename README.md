@@ -2,6 +2,9 @@
 [![Travis CI](https://travis-ci.org/simonepri/restify-errors-options.svg?branch=master)](https://travis-ci.org/simonepri/restify-errors-options) [![Codecov](https://img.shields.io/codecov/c/github/simonepri/restify-errors-options/master.svg)](https://codecov.io/gh/simonepri/restify-errors-options) [![npm](https://img.shields.io/npm/dm/restify-errors-options.svg)](https://www.npmjs.com/package/restify-errors-options) [![npm version](https://img.shields.io/npm/v/restify-errors-options.svg)](https://www.npmjs.com/package/restify-errors-options) [![npm dependencies](https://david-dm.org/simonepri/restify-errors-options.svg)](https://david-dm.org/simonepri/restify-errors-options) [![npm dev dependencies](https://david-dm.org/simonepri/restify-errors-options/dev-status.svg)](https://david-dm.org/simonepri/restify-errors-options#info=devDependencies)
 > 🔧 Add custom options to Restify's errors!
 
+<hr>
+<h2><p align="center">DEPRECATED!!!</p></h2>
+<hr>
 
 ## Install
 
