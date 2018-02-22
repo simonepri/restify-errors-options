@@ -28,7 +28,7 @@ test.serial('should set the default value', t => {
   t.is(err.body.unicorn, undefined);
 });
 
-test.serial('shouldn\'t delete stock options', t => {
+test.serial("shouldn't delete stock options", t => {
   const err = new errors.NotImplementedError();
   t.is(err.body.code, 'NotImplemented');
 
@@ -43,6 +43,9 @@ test.serial('should use options value insted of default value', t => {
   m.add('dragon', '🦄');
   err = new errors.NotExtendedError({dragon: '🐉'});
   t.is(err.body.dragon, '🐉');
+  err = new errors.NotExtendedError({dragon: '🐉'}, "I'm just a dragon");
+  t.is(err.body.dragon, '🐉');
+  t.is(err.body.message, "I'm just a dragon");
 
   m.delete('dragon');
   err = new errors.NotExtendedError();
@@ -75,22 +78,29 @@ test.serial('should allow to use different default for each error code', t => {
   t.is(err.body.errno, undefined);
   err = new errors.NetworkAuthenticationRequiredError();
   t.is(err.body.errno, undefined);
-  err = new errors.NotImplementedError({message: 'Hello World'});
+  err = new errors.NotImplementedError('Hello World');
   t.is(err.body.errno, undefined);
 
   m.add('errno', (code, http, msg) => {
     switch (code) {
-      case 'MethodNotAllowed': return 'MNAE';
-      case 'NotFound': return 'NFE';
-      case 'InvalidVersion': return 'IVE';
-      case 'UnsupportedMediaType': return 'UMTE';
+      case 'MethodNotAllowed':
+        return 'MNAE';
+      case 'NotFound':
+        return 'NFE';
+      case 'InvalidVersion':
+        return 'IVE';
+      case 'UnsupportedMediaType':
+        return 'UMTE';
       default: {
         switch (http) {
-          case 511: return 'NARE';
+          case 511:
+            return 'NARE';
           default: {
             switch (msg) {
-              case 'Hello World': return 'HWE';
-              default: return 'ERROR';
+              case 'Hello World':
+                return 'HWE';
+              default:
+                return 'ERROR';
             }
           }
         }
@@ -110,7 +120,7 @@ test.serial('should allow to use different default for each error code', t => {
   t.is(err.body.errno, 'UMTE');
   err = new errors.NetworkAuthenticationRequiredError();
   t.is(err.body.errno, 'NARE');
-  err = new errors.NotImplementedError({message: 'Hello World'});
+  err = new errors.NotImplementedError('Hello World');
   t.is(err.body.errno, 'HWE');
 
   m.delete('errno');
@@ -126,29 +136,36 @@ test.serial('should allow to use different default for each error code', t => {
   t.is(err.body.errno, undefined);
   err = new errors.NetworkAuthenticationRequiredError();
   t.is(err.body.errno, undefined);
-  err = new errors.NotImplementedError({message: 'Hello World'});
+  err = new errors.NotImplementedError('Hello World');
   t.is(err.body.errno, undefined);
 });
 
-test.serial('should add/delete custom options to/from custom errors\' body', t => {
-  errors.makeConstructor('ExecutionError', {statusCode: 406});
-  let err = new errors.ExecutionError();
-  t.is(err.body.errno, undefined);
+test.serial(
+  "should add/delete custom options to/from custom errors' body",
+  t => {
+    const ExecutionError = errors.makeConstructor('ExecutionError', {
+      statusCode: 406,
+    });
+    let err = new ExecutionError();
+    t.is(err.body.errno, undefined);
 
-  m.add('errno', '');
-  err = new errors.ExecutionError();
-  t.is(err.body.errno, '');
+    m.add('errno', '');
+    err = new ExecutionError();
+    t.is(err.body.errno, '');
 
-  errors.makeConstructor('UnicornError', {statusCode: 404});
-  err = new errors.UnicornError();
-  t.is(err.body.errno, '');
+    const UnicornError = errors.makeConstructor('UnicornError', {
+      statusCode: 404,
+    });
+    err = new UnicornError();
+    t.is(err.body.errno, '');
 
-  m.delete('errno');
-  err = new errors.ExecutionError();
-  t.is(err.body.errno, undefined);
-});
+    m.delete('errno');
+    err = new ExecutionError();
+    t.is(err.body.errno, undefined);
+  }
+);
 
-test.serial('should add/delete custom options to/from http errors\' body', t => {
+test.serial("should add/delete custom options to/from http errors' body", t => {
   let err = errors.makeErrFromCode(406);
   t.is(err.body.errno, undefined);
 
@@ -193,17 +210,10 @@ test.serial('should mantain the error inheritance inalterated', t => {
 test.serial('should create HttpError, and retain a prior cause', t => {
   const priorErr = new Error('foobar');
 
-  let err = new errors.HttpError(priorErr, 'new message');
+  const err = new errors.HttpError(priorErr, 'new message');
   t.is(err.cause(), priorErr);
   t.is(err.name, 'HttpError');
   t.is(err.message, 'new message');
   t.is(err.body.message, 'new message');
-  t.is(err.body.code, 'Error');
-
-  err = new errors.HttpError(priorErr, {message: 'bazinga!'});
-  t.is(err.cause(), priorErr);
-  t.is(err.name, 'HttpError');
-  t.is(err.message, 'bazinga!');
-  t.is(err.body.message, 'bazinga!');
   t.is(err.body.code, 'Error');
 });

@@ -7,7 +7,12 @@ const _ = require('lodash');
 
 const customOptions = {};
 
-const exclude = ['makeConstructor', 'makeErrFromCode', 'bunyanSerializer', 'codeToHttpError'];
+const exclude = [
+  'makeConstructor',
+  'makeErrFromCode',
+  'bunyanSerializer',
+  'codeToHttpError',
+];
 
 Object.keys(errors)
   .filter(key => !exclude.some(method => key === method))
@@ -33,7 +38,10 @@ function extendErrorBody(ctor) {
       if (_.isPlainObject(arguments[0])) {
         // See https://github.com/restify/errors#new-erroroptions--printf-args
         options = arguments[0] || {};
-      } else if (arguments[0] instanceof Error && _.isPlainObject(arguments[1])) {
+      } else if (
+        arguments[0] instanceof Error &&
+        _.isPlainObject(arguments[1])
+      ) {
         // See https://github.com/restify/errors#new-errorpriorerr-options--printf-args
         options = arguments[1] || {};
       }
@@ -51,7 +59,7 @@ function extendErrorBody(ctor) {
    */
   // Use an object because otherwise the variable name is shown as function name.
   const anonymous = {};
-  anonymous.hook = function () {
+  anonymous.hook = function() {
     const options = parseOptions(arguments) || {};
     // Calls the parent constructor with itself as scope.
     ctor.apply(this, arguments);
@@ -85,7 +93,11 @@ function patchErrorBody(err, options) {
     if (value === undefined) {
       value = err.body[optName];
       if (value === '' || value === undefined) {
-        value = customOptions[optName](err.body.code, err.statusCode, err.body.message);
+        value = customOptions[optName](
+          err.body.code,
+          err.statusCode,
+          err.body.message
+        );
       }
     }
     if (value !== undefined) {
@@ -106,8 +118,9 @@ function patchErrorBody(err, options) {
 function patchMakeConstructor() {
   const func = errors.makeConstructor;
   function makeConstructorHook() {
-    func.apply(null, arguments);
-    patchError(arguments[0]);
+    let Contructor = func.apply(null, arguments);
+    Contructor = extendErrorBody(Contructor);
+    return Contructor;
   }
   errors.makeConstructor = makeConstructorHook;
 }
@@ -167,5 +180,5 @@ function delOption(optName) {
 
 module.exports = {
   add: addOption,
-  delete: delOption
+  delete: delOption,
 };
