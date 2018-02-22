@@ -1,6 +1,6 @@
 {
   "name": "restify-errors-options",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Add custom options to Restify's errors",
   "license": "MIT",
   "homepage": "https://github.com/simonepri/restify-errors-options#readme",
