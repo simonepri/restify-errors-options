@@ -7,16 +7,13 @@ const _ = require('lodash');
 
 const customOptions = {};
 
-const exclude = [
-  'makeConstructor',
-  'makeErrFromCode',
-  'bunyanSerializer',
-  'codeToHttpError',
-];
+const exclude = ['codeToHttpError'];
 
 Object.keys(errors)
+  .filter(key => !key.endsWith('Error'))
   .filter(key => !exclude.some(method => key === method))
   .forEach(errName => patchError(errName));
+
 patchMakeConstructor();
 patchMakeErrFromCode();
 
