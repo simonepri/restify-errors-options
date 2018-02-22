@@ -28,7 +28,7 @@ test.serial('should set the default value', t => {
   t.is(err.body.unicorn, undefined);
 });
 
-test.serial('shouldn\'t delete stock options', t => {
+test.serial("shouldn't delete stock options", t => {
   const err = new errors.NotImplementedError();
   t.is(err.body.code, 'NotImplemented');
 
@@ -80,17 +80,24 @@ test.serial('should allow to use different default for each error code', t => {
 
   m.add('errno', (code, http, msg) => {
     switch (code) {
-      case 'MethodNotAllowed': return 'MNAE';
-      case 'NotFound': return 'NFE';
-      case 'InvalidVersion': return 'IVE';
-      case 'UnsupportedMediaType': return 'UMTE';
+      case 'MethodNotAllowed':
+        return 'MNAE';
+      case 'NotFound':
+        return 'NFE';
+      case 'InvalidVersion':
+        return 'IVE';
+      case 'UnsupportedMediaType':
+        return 'UMTE';
       default: {
         switch (http) {
-          case 511: return 'NARE';
+          case 511:
+            return 'NARE';
           default: {
             switch (msg) {
-              case 'Hello World': return 'HWE';
-              default: return 'ERROR';
+              case 'Hello World':
+                return 'HWE';
+              default:
+                return 'ERROR';
             }
           }
         }
@@ -130,25 +137,28 @@ test.serial('should allow to use different default for each error code', t => {
   t.is(err.body.errno, undefined);
 });
 
-test.serial('should add/delete custom options to/from custom errors\' body', t => {
-  errors.makeConstructor('ExecutionError', {statusCode: 406});
-  let err = new errors.ExecutionError();
-  t.is(err.body.errno, undefined);
+test.serial(
+  "should add/delete custom options to/from custom errors' body",
+  t => {
+    errors.makeConstructor('ExecutionError', {statusCode: 406});
+    let err = new errors.ExecutionError();
+    t.is(err.body.errno, undefined);
 
-  m.add('errno', '');
-  err = new errors.ExecutionError();
-  t.is(err.body.errno, '');
+    m.add('errno', '');
+    err = new errors.ExecutionError();
+    t.is(err.body.errno, '');
 
-  errors.makeConstructor('UnicornError', {statusCode: 404});
-  err = new errors.UnicornError();
-  t.is(err.body.errno, '');
+    errors.makeConstructor('UnicornError', {statusCode: 404});
+    err = new errors.UnicornError();
+    t.is(err.body.errno, '');
 
-  m.delete('errno');
-  err = new errors.ExecutionError();
-  t.is(err.body.errno, undefined);
-});
+    m.delete('errno');
+    err = new errors.ExecutionError();
+    t.is(err.body.errno, undefined);
+  }
+);
 
-test.serial('should add/delete custom options to/from http errors\' body', t => {
+test.serial("should add/delete custom options to/from http errors' body", t => {
   let err = errors.makeErrFromCode(406);
   t.is(err.body.errno, undefined);
 
