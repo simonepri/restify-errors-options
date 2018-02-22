@@ -115,9 +115,8 @@ function patchErrorBody(err, options) {
 function patchMakeConstructor() {
   const func = errors.makeConstructor;
   function makeConstructorHook() {
-    let Contructor = func.apply(null, arguments);
-    Contructor = extendErrorBody(Contructor);
-    return Contructor;
+    func.apply(null, arguments);
+    patchError(arguments[0]);
   }
   errors.makeConstructor = makeConstructorHook;
 }
