@@ -3,7 +3,7 @@
 > 🔧 Add custom options to Restify's errors!
 
 <hr>
-<h2><p align="center">DEPRECATED!!!</p></h2>
+<p align="center"><strong>DEPRECATED!!!</strong></p>
 <hr>
 
 ## Install
