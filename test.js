@@ -217,3 +217,20 @@ test.serial('should create HttpError, and retain a prior cause', t => {
   t.is(err.body.message, 'new message');
   t.is(err.body.code, 'Error');
 });
+
+test.serial('should respect the examples in the readme', t => {
+  const err1 = new errors.NotFoundError({errno: 'NFE'});
+  t.deepEqual(err1.toJSON(), {code: 'NotFound', message: ''});
+
+  m.add('errno');
+  const err2 = new errors.NotFoundError({errno: 'NFE'});
+  t.deepEqual(err2.toJSON(), {code: 'NotFound', message: '', errno: 'NFE'});
+  t.deepEqual(err1.toJSON(), {code: 'NotFound', message: ''});
+
+  // Restore the default behaviour
+  m.delete('errno');
+  const err3 = new errors.NotFoundError({errno: 'NFE'});
+  t.deepEqual(err3.toJSON(), {code: 'NotFound', message: ''});
+  t.deepEqual(err2.toJSON(), {code: 'NotFound', message: '', errno: 'NFE'});
+  t.deepEqual(err1.toJSON(), {code: 'NotFound', message: ''});
+});
